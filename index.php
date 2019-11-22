@@ -17,27 +17,28 @@
     </div>
 </div>
 
-
 <?php 
     if ($_GET["signup_button"]==="signup") {
-        $acc_info = $_GET;
-        array_pop($acc_info);
-        $logins[]=$acc_info["login"];
-        $passwords[]=$acc_info["password"];
-        //var_dump($logins);
-        $encoded_logins = json_encode($logins);
-        file_put_contents ($login_file, $encoded_logins);
-        $encoded_pass = json_encode($passwords);
-        file_put_contents ($pass_file, $encoded_pass);
-        }
-        
-        //echo($err_index);
-
-    
-
+        $logins = file_get_contents($login_file);
+        $logins = json_decode ($logins, true);
+        $passwords = file_get_contents($pass_file);
+        $passwords = json_decode ($passwords, true);
+        foreach ($logins as $key) {
+            if ($_GET["login"]===$key) {
+                $err_code = 1;
+                break;
+            } else {
+                $logins[]=$_GET["login"];
+                $passwords[]=$_GET["password"];
+                $encoded_logins = json_encode($logins);
+                file_put_contents ($login_file, $encoded_logins);
+                $encoded_pass = json_encode($passwords);
+                file_put_contents ($pass_file, $encoded_pass);
+            }
+        } 
+    }
+    echo ($err_code);
 ?>
-
-
 
 <?php 
     include "footer.php";
