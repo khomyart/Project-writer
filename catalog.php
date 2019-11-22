@@ -3,7 +3,7 @@
 ?>
 
 
-<div class="container vh-100 p-0">
+<div class="container p-0" style="height: 100vh;">
 
 </div>
 

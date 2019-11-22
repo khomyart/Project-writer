@@ -1,4 +1,8 @@
-.border_checker {
+.border-checker {
   border: 1px solid red;
   box-sizing: border-box;
+}
+
+.bad-value {
+  box-shadow: 0 0 10px 2px red;
 }
