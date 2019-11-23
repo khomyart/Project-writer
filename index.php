@@ -36,24 +36,29 @@
         $passwords = file_get_contents($pass_file);
         $passwords = json_decode ($passwords, true);
         $log_i=0;
-        foreach ($logins as $logkey) {
-            if ($_GET["login"]===$logkey) {
-                $login_key = $log_i;
-                break;
-            }
-            $log_i++;
-        }
-        $pass_i=0;
-        foreach ($passwords as $passkey) {
-            if ($pass_i===$log_i) {
-                if ($_GET["password"]===$passkey) {
-                    $err_code = 0;
-                } else {
-                    $err_code = 2;
+        if (loginRepeatChecker($logins)) {
+            foreach ($logins as $logkey) {
+                if ($_GET["login"]===$logkey) {
+                    $login_key = $log_i;
+                    break;
                 }
+                $log_i++;
             }
-            $pass_i++;
+            $pass_i=0;
+            foreach ($passwords as $passkey) {
+                if ($pass_i===$log_i) {
+                    if ($_GET["password"]===$passkey) {
+                        $err_code = 0;
+                    } else {
+                        $err_code = 2;
+                    }
+                }
+                $pass_i++;
+            }
+        } else {
+            $err_code=3;
         }
+
     }
     //USER AUTHORIZATION 
 ?>
@@ -67,8 +72,8 @@
                 <?= loginErrMessageFeedback (); ?>
             </div>
             <div class="d-flex justify-content-center">
-                <button type="submit" style="margin-top:25px; border-radius: 8px 0 0 8px;" class="btn btn-primary" name="signin_button" value="signin">Log In</button>
-                <button type="submit" style="margin-top:25px; border-radius: 0 8px 8px 0;" class="btn btn-primary" name="signup_button" value="signup">Registration</button>
+                <button type="submit" style="margin-top:15px; border-radius: 8px 0 0 8px;" class="btn btn-primary" name="signin_button" value="signin">Log In</button>
+                <button type="submit" style="margin-top:15px; border-radius: 0 8px 8px 0;" class="btn btn-primary" name="signup_button" value="signup">Registration</button>
             </div>
         </form>
     </div>
