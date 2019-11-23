@@ -4,5 +4,16 @@
 }
 
 .bad-value {
-  box-shadow: 0 0 10px 2px red;
+  box-shadow: 0 0 5px 1px red;
 }
+
+.login_text_error {
+  margin-top:10px;
+  color: red;
+  height: 20px;
+  width: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
