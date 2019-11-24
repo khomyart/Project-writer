@@ -1,11 +1,10 @@
 <?php 
-    session_start();
-    include "header.php";
-?>
+session_start();
+include "header.php";
 
-<?php 
 if (isset($_SESSION["auth"]))
-{
+{            
+    var_dump($_SESSION);
 ?>  
 <!--insert some html-->
 <div class="container p-0 d-flex flex-column" style="height: 100vh; background-color: #f3f3f3;">
@@ -25,7 +24,7 @@ if (isset($_SESSION["auth"]))
             </li>
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <?= $_SESSION["auth"]["dname"] ?>
+                <?= $_SESSION["auth"]["display_name"] ?>
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                     <a class="dropdown-item" href="#">Action</a>
@@ -48,12 +47,13 @@ if (isset($_SESSION["auth"]))
         </div>
     </nav>
     <!--NAVBAR-->
-    <h1>Hello, <?php echo($_SESSION["auth"]["dname"]);?></h1>
+    <h1>Hello, <?php echo($_SESSION["auth"]["display_name"]);?></h1>
+    
 </div>
 
 <?php
 } else {
-    echo "you are not authorized, please, go to authorization page and sign in";
+    header("Location: http://files.khomyart.com/index.php");
 }
 ?>
 

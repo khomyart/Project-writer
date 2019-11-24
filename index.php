@@ -1,69 +1,71 @@
 <?php
     session_start();
-    if (isset($_SESSION["auth"])) {
-        header ("Location: http://files.khomyart.com/catalog.php");
-        exit ();
+    if(isset($_SESSION["auth"])) {
+        header("Location: http://files.khomyart.com/catalog.php");
+        exit();
     } else {
-    include "header.php";
-    include "functions.php";
-    $acc_file = "dat_files/accounts.dat";
-    $login_file = "dat_files/login.dat";
-    $pass_file = "dat_files/pass.dat";
-    $dname_file = "dat_files/dname.dat";
-?>
-
-<?php 
-
-    //USER AUTHORIZATION
-    if ($_POST["signin_button"]==="signin") {
-        $logins = file_get_contents($login_file);
-        $logins = json_decode ($logins, true);
-        $passwords = file_get_contents($pass_file);
-        $passwords = json_decode ($passwords, true);
-        $log_i=0;
-        if (RepeatChecker($logins, "login")) {
-            foreach ($logins as $logkey) {
-                if ($_POST["login"]===$logkey) {
-                    $login_key = $log_i;
-                    break;
-                }
-                $log_i++;
-            }
-            $pass_i=0;
-            foreach ($passwords as $passkey) {
-                if ($pass_i===$log_i) {
-                    if ($_POST["password"]===$passkey) {
-                        $_SESSION["auth"]["login"] = $_POST["login"];  
-                        $dnames = file_get_contents($dname_file);
-                        $dnames = json_decode ($dnames, true);
-                        $_SESSION["auth"]["dname"] = $dnames[$log_i];
-                        header ("Location: http://files.khomyart.com/catalog.php");
-                        exit ();
-                    } else {
-                        $err_code = 2;
-                    }
-                }
-                $pass_i++;
-            }
-        } else {
-            $err_code=3;
+        include "header.php";
+        include "functions.php";
+        $users_file = "dat_files/accounts.dat";
+        $user_id = 0; #can be used to get id of user who pass through auth process
+        $method = $_POST;
+        if($method === $_POST) {
+            $form_method = "post";
+        }elseif($method === $_GET) {
+            $form_method = "get";
         }
-    }
-    //USER AUTHORIZATION 
+
+        #User authorization
+        $users = file_get_contents($users_file);
+        $users = json_decode($users, TRUE);
+        if(isset($method["signin_button"])) {
+            if(AuthValidationChecker($users, $method, $user_id)){
+                $_SESSION["auth"]["login"] = $users[$user_id]["login"];
+                $_SESSION["auth"]["display_name"] = $users[$user_id]["display_name"]; 
+                $_SESSION["auth"]["user_id"] = $user_id;
+                header("Location: http://files.khomyart.com/catalog.php");
+                exit();
+            } else {
+                $err_code=2;
+            }
+        }
+        #User authorization end
 ?>
 
 <div class="container p-0" style="height: 100vh;">
     <div class="d-flex flex-column justify-content-center align-items-center w-100 h-100">
-        <form method="post" action="index.php" class="d-flex flex-column justify-content-center align-items-center col-9 col-md-6 col-xl-3" >
-            <input class="form-control <?= ErrClassFeedback(); ?>" type="text" placeholder="Login" name="login" value="">
-            <input class="form-control <?= ErrClassFeedback(); ?>" type="password" id="exampleInputPassword1" style="margin-top:15px;" placeholder="Password" name="password" value="">
-            <div class="login_text_error">
-                <?= ErrMessageFeedback ();?>
-            </div>
+        <form 
+            method=<?=$form_method?>
+            action="index.php" 
+            class="d-flex flex-column justify-content-center align-items-center col-9 col-md-6 col-xl-3">
+            <input 
+                class="form-control <?=ErrorClassFeedback();?>" 
+                type="text" 
+                placeholder="Login" 
+                name="login" value="">
+            <input 
+                class="form-control <?=ErrorClassFeedback();?>" 
+                type="password" 
+                id="exampleInputPassword1" 
+                style="margin-top:15px;" 
+                placeholder="Password"
+                name="password" 
+                value="">
+                <?=ErrorMessageFeedback();?>
             <div class="d-flex justify-content-center">
-                <button type="submit" style="margin-top:15px; border-radius: 8px 0 0 8px;" class="btn btn-primary" name="signin_button" value="signin">Log In</button>
+                <button 
+                    type="submit" 
+                    style="margin-top:15px; border-radius: 8px 0 0 8px;" 
+                    class="btn btn-primary" 
+                    name="signin_button" 
+                    value="signin">
+                    Log In
+                </button>
                 <a href="http://files.khomyart.com/registration.php">
-                    <button type="button" style="margin-top:15px; border-radius: 0 8px 8px 0;" class="btn btn-primary" name="signup_button" value="signup">
+                    <button 
+                        type="button" 
+                        style="margin-top:15px; border-radius: 0 8px 8px 0;" 
+                        class="btn btn-primary">
                         Registration
                     </button>
                 </a>
@@ -73,6 +75,6 @@
 </div>
 
 <?php 
-    include "footer.php";
-}
+        include "footer.php";
+    }
 ?>
