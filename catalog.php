@@ -25,7 +25,7 @@ if (isset($_SESSION["auth"]))
             </li>
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <?= $_SESSION["auth"] ?>
+                <?= $_SESSION["auth"]["dname"] ?>
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                     <a class="dropdown-item" href="#">Action</a>
@@ -48,7 +48,7 @@ if (isset($_SESSION["auth"]))
         </div>
     </nav>
     <!--NAVBAR-->
-    <h1>Hello, <?php echo($_SESSION["auth"]);?></h1>
+    <h1>Hello, <?php echo($_SESSION["auth"]["dname"]);?></h1>
 </div>
 
 <?php

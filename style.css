@@ -7,7 +7,7 @@
   box-shadow: 0 0 5px 1px red;
 }
 
-.login_text_error {
+.text_error {
   text-align: center;
   margin-top:10px;
   color: red;
@@ -18,3 +18,13 @@
   align-items: center;
 }
 
+.text_success {
+  text-align: center;
+  margin-top:10px;
+  color: rgb(0, 212, 18);
+  height: 20px;
+  width: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
