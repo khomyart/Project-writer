@@ -11,25 +11,27 @@ if(isset($_SESSION["auth"])) {
     $method = $_POST;
     if($method === $_POST) {
         $form_method = "post";
-    }elseif($method === $_GET) {
+    } elseif($method === $_GET) {
         $form_method = "get";
     }
 
     #User registration 
-    if($_POST["signup_button"]==="signup"){
+    if($_POST["signup_button"]==="signup") {
          $users = file_get_contents($users_file);
          $users = json_decode($users, TRUE);
-        if(ElementExistenceChecker($method, $users, "login")){
+        if(ElementExistenceChecker($method, $users, "login")) {
             $err_code = 1;
-        }elseif(ElementExistenceChecker($method, $users, "display_name")){
+        } elseif(ElementExistenceChecker($method, $users, "display_name")) {
             $err_code = 4;
-        }else{
+        } else {
             $i = count($users);
             $users[$i]["login"] = $method["login"];
             $users[$i]["password"] = $method["password"];
             $users[$i]["display_name"] = $method["display_name"];
             $encoded_users = json_encode($users);
-            file_put_contents ($users_file, $encoded_users);
+            file_put_contents($users_file, $encoded_users);
+            $user_home_directory = 'users/'.$users[$i]["login"].'/files';
+            mkdir($user_home_directory, 0777, true);
             $err_code = 0;
         }
     }
@@ -91,6 +93,6 @@ if(isset($_SESSION["auth"])) {
     }
     if($err_code===0){
         header('Refresh: 1; URL=http://files.khomyart.com/index.php');
-        exit;
+        exit();
     }
 ?>

@@ -5,25 +5,29 @@
     if (isset($_SESSION["auth"])){
     $list_of_files = "dat_files/list_of_files.dat";
     $users_file = "dat_files/accounts.dat";
-    $default_file_path = "/dat_files";
     
     if(isset($_POST["create_file"])) {
         $files = file_get_contents($list_of_files);
         $files = json_decode($files, TRUE);
     
         $i=count($files);
-    
+        $default_file_path = 'users/'.$_SESSION["auth"]["login"].'/files'."/";
         $files[$i]["file_owner"] = $_SESSION["auth"]["user_id"];
-        $files[$i]["file_path"] = "$default_file_path";
+        $files[$i]["file_path"] = $default_file_path;
         $files[$i]["file_name"] = $_POST["file_name"];
         $files[$i]["file_type"] = $_POST["file_type"];
         $files[$i]["file_description"] = $_POST["file_description"];
-            
-        $encoded_list_of_files = json_encode($files);
-        file_put_contents ($list_of_files,  $encoded_list_of_files);
+        
+        if(!file_exists($files[$i]["file_path"].$files[$i]["file_name"].$files[$i]["file_type"])) {
+          file_put_contents($files[$i]["file_path"].$files[$i]["file_name"].$files[$i]["file_type"], "");
+          $encoded_list_of_files = json_encode($files);
+          file_put_contents ($list_of_files,  $encoded_list_of_files);
+        } else {
+          $error_code = 5;
+        }
+
         header("Location: http://files.khomyart.com/catalog.php");
     }
-
 
     if (isset($_POST["logout"])) {
         session_destroy();
@@ -94,13 +98,14 @@
     <!-- Button trigger modal -->
     <button
       type="button"
-      class="btn btn-primary col-4 col-xl-2"
+      class="btn btn-primary col-4 col-xl-2 <?=ErrorClassFeedback();?>"
       style="margin-top:15px;"
       data-toggle="modal"
       data-target="#exampleModalCenter"
     >
       Create file
     </button>
+    <?=ErrorMessageFeedback();?>
 
     <!-- Modal -->
     <div
@@ -133,8 +138,8 @@
                     Type
                 </span">
               <select class="form-control modal_elements_intervar" name="file_type" autocomplete="off">
-                <option value="0">*.txt</option>
-                <option value="1">*.dat</option>
+                <option value=".txt">*.txt</option>
+                <option value=".dat">*.dat</option>
               </select>
                 <span">
                     Description
@@ -168,13 +173,15 @@
     <?php 
         $files = file_get_contents($list_of_files);
         $files = json_decode($files, TRUE);
-        foreach($files as $file_index) {
-        file_put_content($files[$file_index]["file_path"].$files[$file_index]["file_name"].$files[$file_index]["file_type"], ""); 
+        for($file_index=0; $file_index<count($files); $file_index++) {
+          if(($files[$file_index]["file_owner"]===$_SESSION["auth"]["user_id"]) 
+          && (file_exists($files[$file_index]["file_path"].$files[$file_index]["file_name"].$files[$file_index]["file_type"]))) {
     ?>
       <a href="#" class="list-group-item list-group-item-action ">
-        <?=$files[$file_index]["file_name"].$files[$file_index]["file_type"];?>
+        <?=$files[$file_index]["file_name"].$files[$file_index]["file_type"]?>
       </a>
     <?php
+          }
         }
     ?>
       <!--File list end-->

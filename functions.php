@@ -1,5 +1,6 @@
 <?php
 
+
     //err_code=1 when registration is not ok, err_code=2 when authorization is not ok
 
     /**
@@ -42,7 +43,8 @@
         if ($err_code === 1 || 
             $err_code === 2 || 
             $err_code === 3 ||
-            $err_code === 4) {
+            $err_code === 4 ||
+            $err_code === 5) {
             return 'bad-value';
         } else {
             return '';
@@ -61,6 +63,16 @@
             return "<div class='text_error'>Account does not exist</div>";
         } elseif ($err_code === 4) {
              return "<div class='text_error'>Display name already exists</div>";
+        } elseif ($_SESSION["auth"]["err_code"] === 5) {
+            return "<div class='text_error'>File already exists</div>";
+       }
+    }
+
+    function FileNameRepeatingChecker($input_massive, $name_to_compare_with) {
+        for($i=0; $i<count($input_massive); $i++) {
+            if($input_massive[$i]["file_name"]===$name_to_compare_with) {
+                return true;
+            }
         }
     }
 
