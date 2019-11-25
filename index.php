@@ -14,10 +14,10 @@
         }elseif($method === $_GET) {
             $form_method = "get";
         }
-
         #User authorization
         $users = file_get_contents($users_file);
         $users = json_decode($users, TRUE);
+        var_dump($users);
         if(isset($method["signin_button"])) {
             if(AuthValidationChecker($users, $method, $user_id)){
                 $_SESSION["auth"]["login"] = $users[$user_id]["login"];

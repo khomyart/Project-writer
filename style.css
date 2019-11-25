@@ -9,7 +9,7 @@
 
 .text_error {
   text-align: center;
-  margin-top:10px;
+  margin-top: 10px;
   color: red;
   height: 20px;
   width: auto;
@@ -20,11 +20,15 @@
 
 .text_success {
   text-align: center;
-  margin-top:10px;
+  margin-top: 10px;
   color: rgb(0, 212, 18);
   height: 20px;
   width: auto;
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.modal_elements_intervar {
+  margin-bottom: 10px;
 }

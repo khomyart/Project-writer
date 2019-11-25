@@ -24,10 +24,10 @@ if(isset($_SESSION["auth"])) {
         }elseif(ElementExistenceChecker($method, $users, "display_name")){
             $err_code = 4;
         }else{
-            $i=count($users);
-            $users[$i+1]["login"] = $method["login"];
-            $users[$i+1]["password"] = $method["password"];
-            $users[$i+1]["display_name"] = $method["display_name"];
+            $i = count($users);
+            $users[$i]["login"] = $method["login"];
+            $users[$i]["password"] = $method["password"];
+            $users[$i]["display_name"] = $method["display_name"];
             $encoded_users = json_encode($users);
             file_put_contents ($users_file, $encoded_users);
             $err_code = 0;
@@ -90,7 +90,7 @@ if(isset($_SESSION["auth"])) {
         include "footer.php";
     }
     if($err_code===0){
-        header('Refresh: 2; URL=http://files.khomyart.com/index.php');
+        header('Refresh: 1; URL=http://files.khomyart.com/index.php');
         exit;
     }
 ?>
