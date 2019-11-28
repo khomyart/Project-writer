@@ -1,41 +1,18 @@
 <?php
     session_start();
     if(isset($_SESSION["auth"])) {
-        header("Location: http://files.khomyart.com/catalog.php");
+        header("Location: catalog.php");
         exit();
     } else {
-        include "header.php";
         include "functions.php";
-        $users_file = "dat_files/accounts.dat";
-        $user_id = 0; #can be used to get id of user who pass through auth process
-        $method = $_POST;
-        if($method === $_POST) {
-            $form_method = "post";
-        }elseif($method === $_GET) {
-            $form_method = "get";
-        }
-        #User authorization
-        $users = file_get_contents($users_file);
-        $users = json_decode($users, TRUE);
-        var_dump($users);
-        if(isset($method["signin_button"])) {
-            if(AuthValidationChecker($users, $method, $user_id)){
-                $_SESSION["auth"]["login"] = $users[$user_id]["login"];
-                $_SESSION["auth"]["display_name"] = $users[$user_id]["display_name"]; 
-                $_SESSION["auth"]["user_id"] = $user_id;
-                header("Location: http://files.khomyart.com/catalog.php");
-                exit();
-            } else {
-                $err_code=2;
-            }
-        }
-        #User authorization end
+        include "header.php";
+        include "scripts/authenticator.php"; 
 ?>
 
 <div class="container p-0" style="height: 100vh;">
     <div class="d-flex flex-column justify-content-center align-items-center w-100 h-100">
         <form 
-            method=<?=$form_method?>
+            method="<?=$form_method?>"
             action="index.php" 
             class="d-flex flex-column justify-content-center align-items-center col-9 col-md-6 col-xl-3">
             <input 

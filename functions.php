@@ -1,35 +1,27 @@
 <?php
-
-
+    $err_code=-1;
     //err_code=1 when registration is not ok, err_code=2 when authorization is not ok
 
-    /**
-     * User submits login through some method
-     * and function does check if submited login alredy exists in $usersmassive,
-     * then check if submited password through method does match current user's login
-     * 
-     * @param array $usersmassive
-     * @param array $method
-     * @param int $user_id
-     * 
-     * @return true if auth is succesfull
-     */
-
-    function AuthValidationChecker($users_massive, $method, &$user_id) {
-        for($i=0; $i <= count($users_massive); $i++) {
-            if($method["login"] === $users_massive[$i]["login"]) {
-                if ($method["password"] === $users_massive[$i]["password"]) {
-                    $user_id = $i;
-                    return true;
-                }
+    function LoginExistence($reading_query_result, $login) {
+        while($row = mysqli_fetch_assoc($reading_query_result)) {
+            if($row['user_login'] === $login) {
+                return true;
             }
         }
     }
 
-    function ElementExistenceChecker($method, $users_massive, $key_of_element){
-        for($i=0; $i <= count($users_massive); $i++){
-            if($method[$key_of_element] === $users_massive[$i][$key_of_element]){
-                return true;
+    function AuthValidation($users, $login, $password) {
+    global $err_code;
+       foreach($users as $user) {
+            if(($user["user_login"] === $login) 
+            && (password_verify($password, $user["user_pwd"]))) {
+                $_SESSION["auth"]["login"] = $user['user_login'];
+                $_SESSION["auth"]["display_name"] = $user['user_dname'];
+                $_SESSION["auth"]["user_id"] = $user['user_id'];
+                header("Location: http://files.khomyart.com/catalog.php");
+                exit();
+            } elseif(isset($login)) {
+                $err_code = 2;
             }
         }
     }
@@ -38,7 +30,7 @@
      * Function check for err_code,  
      */
     
-    function ErrorClassFeedback () {
+    function ErrorClassFeedback() {
         global $err_code;
         if ($err_code === 1 || 
             $err_code === 2 || 
@@ -51,12 +43,12 @@
         }
     }
 
-    function ErrorMessageFeedback () {
+    function ErrorMessageFeedback() {
         global $err_code;
         if ($err_code === 0) {
             return "<div class='text_success'>Success!</div>";
         } elseif ($err_code === 1) {
-            return "<div class='text_error'>Account already exists</div>";
+            return "<div class='text_error'>Account or display name already exists</div>";
         } elseif ($err_code === 2) {
             return "<div class='text_error'>Login or password is incorrect</div>";
         } elseif ($err_code === 3) {
@@ -66,14 +58,6 @@
         } elseif ($_SESSION["auth"]["err_code"] === 5) {
             return "<div class='text_error'>File already exists</div>";
        }
-    }
-
-    function FileNameRepeatingChecker($input_massive, $name_to_compare_with) {
-        for($i=0; $i<count($input_massive); $i++) {
-            if($input_massive[$i]["file_name"]===$name_to_compare_with) {
-                return true;
-            }
-        }
     }
 
 ?>
