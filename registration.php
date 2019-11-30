@@ -1,10 +1,11 @@
 <?php
+    ini_set('display_errors', 1);
     session_start();
-    include 'scripts/db_connector.php';
-    include 'functions.php';
-    include 'scripts/registrator.php';
-    include 'header.php';
-    if (isset($_SESSION['auth'])) {
+    include "/var/www/files.khomyart.com/public_html/scripts/db_connector.php";
+    include "/var/www/files.khomyart.com/public_html/functions.php";
+    include "/var/www/files.khomyart.com/public_html/scripts/registrator.php"; 
+    include "/var/www/files.khomyart.com/public_html/header.php";   
+    if (isset($_SESSION['auth']["login"])) {
         header("Location: ../catalog.php");
         exit();
     } else {
@@ -60,6 +61,6 @@
     </div>
 
 <?php 
-        include 'footer.php';
+       include "/var/www/files.khomyart.com/public_html/footer.php";
     }
 ?>

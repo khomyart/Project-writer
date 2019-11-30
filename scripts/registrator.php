@@ -1,6 +1,4 @@
 <?php
-    include "../functions.php";
-    
     $login = mysqli_real_escape_string($db_connection,$_POST["login"]);
     $password = password_hash($_POST["password"], PASSWORD_DEFAULT);
     $password=mysqli_real_escape_string($db_connection,$password);
@@ -10,11 +8,9 @@
         if (strlen($_POST["login"])<3 || strlen($_POST["password"])<3) {
             $err_code = 6;
         }
-
         if (strlen($_POST["login"])>16 || strlen($_POST["password"])>16) {
             $err_code = 7;
         }
-
         $sql_query_read = "SELECT user_login FROM users;";
         $read_result = mysqli_query($db_connection, $sql_query_read);
         if(!$read_result) {
@@ -45,7 +41,10 @@
             } elseif (!mysqli_stmt_execute($stmt)) {
                 echo "nonono u got an stmt eroo"; 
             } else {
+                $user_dir = 'users/'.$_POST['login']."/files/";
+                mkdir($user_dir, 0777, true); 
                 $err_code=0;
+                $_SESSION["auth"]["user_folder"] = $user_dir;
                 header("Refresh: 2; url=../index.php");
             }  
                        

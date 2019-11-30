@@ -1,12 +1,14 @@
 <?php
+    ini_set('display_errors', 1);
     session_start();
-    if(isset($_SESSION["auth"])) {
+    if(isset($_SESSION["auth"]["login"])) {
         header("Location: catalog.php");
         exit();
     } else {
-        include "functions.php";
-        include "header.php";
-        include "scripts/authenticator.php"; 
+        include "/var/www/files.khomyart.com/public_html/scripts/db_connector.php";
+        include "/var/www/files.khomyart.com/public_html/functions.php";
+        include "/var/www/files.khomyart.com/public_html/scripts/authenticator.php"; 
+        include "/var/www/files.khomyart.com/public_html/header.php";    
 ?>
 
 <div class="container p-0" style="height: 100vh;">
@@ -52,6 +54,6 @@
 </div>
 
 <?php 
-        include "footer.php";
+        include "/var/www/files.khomyart.com/public_html/footer.php";
     }
 ?>

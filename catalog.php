@@ -1,41 +1,15 @@
 <?php 
     session_start();
-    include "header.php";
-    include "functions.php";
+    ini_set('display_errors', 1);
+
+    include "/var/www/files.khomyart.com/public_html/header.php"; 
+
     if (isset($_SESSION["auth"])){
-    $list_of_files = "dat_files/list_of_files.dat";
-    $users_file = "dat_files/accounts.dat";
-    
-    if(isset($_POST["create_file"])) {
-        $files = file_get_contents($list_of_files);
-        $files = json_decode($files, TRUE);
-    
-        $i=count($files);
-        $default_file_path = 'users/'.$_SESSION["auth"]["login"].'/files'."/";
-        $files[$i]["file_owner"] = $_SESSION["auth"]["user_id"];
-        $files[$i]["file_path"] = $default_file_path;
-        $files[$i]["file_name"] = $_POST["file_name"];
-        $files[$i]["file_type"] = $_POST["file_type"];
-        $files[$i]["file_description"] = $_POST["file_description"];
-        
-        if(!file_exists($files[$i]["file_path"].$files[$i]["file_name"].$files[$i]["file_type"])) {
-          file_put_contents($files[$i]["file_path"].$files[$i]["file_name"].$files[$i]["file_type"], "");
-          $encoded_list_of_files = json_encode($files);
-          file_put_contents ($list_of_files,  $encoded_list_of_files);
-        } else {
-          $error_code = 5;
-        }
-
-        header("Location: http://files.khomyart.com/catalog.php");
-    }
-
-    if (isset($_POST["logout"])) {
-        session_destroy();
-        unset($_SESSION);
-        header('Location: http://files.khomyart.com/index.php');
-        exit();
-    } 
+      include "/var/www/files.khomyart.com/public_html/scripts/db_connector.php";
+      include "/var/www/files.khomyart.com/public_html/functions.php";
+      include "/var/www/files.khomyart.com/public_html/scripts/file_creator.php"; 
 ?>
+
 <div
   class="container p-0 d-flex flex-column"
   style="height: 100vh; background-color: #f3f3f3;"
@@ -73,7 +47,7 @@
             aria-haspopup="true"
             aria-expanded="false"
           >
-            <?= $_SESSION["auth"]["display_name"] ?>
+            <?= $_SESSION["auth"]["display_name"]?>
           </a>
           <div class="dropdown-menu" aria-labelledby="navbarDropdown">
             <a class="dropdown-item" href="#">Action</a>
@@ -95,17 +69,80 @@
     </div>
   </nav>
   <div class="row d-flex justify-content-center">
+     <!-- Button trigger modal --> <!-- Button trigger modal --> <!-- Button trigger modal --> <!-- Button trigger modal --> <!-- Button trigger modal --> <!-- Button trigger modal -->
+     <button
+     type="button"
+     class="btn btn-primary col-4 col-xl-2"
+     style="margin-top:15px;"
+     data-toggle="modal"
+     data-target="#exampleModalCenter1"
+   >
+     Create folder
+   </button>
+
+   <!-- Modal -->
+   <div
+     class="modal fade"
+     id="exampleModalCenter1"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="exampleModalCenterTitle1"
+     aria-hidden="true">
+     <div class="modal-dialog modal-dialog-centered" role="document" >
+       <div class="modal-content">
+         <div class="modal-header">
+           <button
+             type="button"
+             class="close"
+             data-dismiss="modal"
+             aria-label="Close"
+           >
+             <span aria-hidden="true">&times;</span>
+           </button>
+         </div>
+         <div class="modal-body">
+           <form method="post" action="catalog.php" autocomplete="off">
+               <span>
+                   Name
+               </span>
+             <input class="form-control modal_elements_intervar" type="text" placeholder="" name="folder_name" autocomplete="off"/>
+               <span>
+                   Description
+               </span>
+             <input
+               class="form-control modal_elements_intervar"
+               type="text"
+               placeholder=""
+               name ="folder_description"
+               autocomplete="off"
+             />
+           <div class="modal-footer">
+               <button
+               type="button"
+               class="btn btn-secondary"
+               data-dismiss="modal"
+               >
+               Close
+               </button>
+               <button type="submit" class="btn btn-primary" name="create_folder" value="create_folder">Create</button>
+           </div>
+           </form>
+         </div>
+       </div>
+     </div>
+   </div>
+
+      <!-- Button trigger modal --> <!-- Button trigger modal --> <!-- Button trigger modal --> <!-- Button trigger modal --> <!-- Button trigger modal --> <!-- Button trigger modal -->
     <!-- Button trigger modal -->
     <button
       type="button"
-      class="btn btn-primary col-4 col-xl-2 <?=ErrorClassFeedback();?>"
+      class="btn btn-primary col-4 col-xl-2"
       style="margin-top:15px;"
       data-toggle="modal"
       data-target="#exampleModalCenter"
     >
       Create file
     </button>
-    <?=ErrorMessageFeedback();?>
 
     <!-- Modal -->
     <div
@@ -114,8 +151,7 @@
       tabindex="-1"
       role="dialog"
       aria-labelledby="exampleModalCenterTitle"
-      aria-hidden="true"
-    >
+      aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered" role="document" >
         <div class="modal-content">
           <div class="modal-header">
@@ -130,20 +166,20 @@
           </div>
           <div class="modal-body">
             <form method="post" action="catalog.php" autocomplete="off">
-                <span">
+                <span>
                     Name
-                </span">
+                </span>
               <input class="form-control modal_elements_intervar" type="text" placeholder="" name="file_name" autocomplete="off"/>
-                 <span">
+                 <span>
                     Type
-                </span">
+                </span>
               <select class="form-control modal_elements_intervar" name="file_type" autocomplete="off">
                 <option value=".txt">*.txt</option>
                 <option value=".dat">*.dat</option>
               </select>
-                <span">
+                <span>
                     Description
-                </span">
+                </span>
               <input
                 class="form-control modal_elements_intervar"
                 type="text"
@@ -163,28 +199,19 @@
             </div>
             </form>
           </div>
-
         </div>
       </div>
     </div>
   </div>
-      <!--File list-->
+      
   <div class="list-group" style="margin-top:15px;">
-    <?php 
-        $files = file_get_contents($list_of_files);
-        $files = json_decode($files, TRUE);
-        for($file_index=0; $file_index<count($files); $file_index++) {
-          if(($files[$file_index]["file_owner"]===$_SESSION["auth"]["user_id"]) 
-          && (file_exists($files[$file_index]["file_path"].$files[$file_index]["file_name"].$files[$file_index]["file_type"]))) {
-    ?>
-      <a href="#" class="list-group-item list-group-item-action ">
-        <?=$files[$file_index]["file_name"].$files[$file_index]["file_type"]?>
-      </a>
-    <?php
-          }
-        }
-    ?>
+      <form action="" method="get">
+      <!--File list-->
+        <?php
+          include "/var/www/files.khomyart.com/public_html/scripts/list_of_files_and_folders.php";
+        ?>
       <!--File list end-->
+      </form>
     </div>
 </div>
 
@@ -193,5 +220,5 @@
         header("Location: http://files.khomyart.com/index.php");
         exit();
     }
-    include "footer.php";
+    include "/var/www/files.khomyart.com/public_html/footer.php";
 ?>

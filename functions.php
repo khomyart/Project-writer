@@ -1,6 +1,5 @@
 <?php
     $err_code=NULL;
-    
     /**
      * 
      * 
@@ -34,9 +33,11 @@
        foreach($users as $user) {
             if(($user["user_login"] === $login) 
             && (password_verify($password, $user["user_pwd"]))) {
-                $_SESSION["auth"]["login"] = $user['user_login'];
-                $_SESSION["auth"]["display_name"] = $user['user_dname'];
-                $_SESSION["auth"]["user_id"] = $user['user_id'];
+                $_SESSION["auth"]["login"] = $user["user_login"];
+                $_SESSION["auth"]["display_name"] = $user["user_dname"];
+                $_SESSION["auth"]["user_id"] = $user["user_id"];
+                $user_dir = 'users/'.$_POST['login']."/files";
+                $_SESSION["auth"]["user_folder"] = $user_dir;
                 header("Location: http://files.khomyart.com/catalog.php");
                 exit();
             } elseif(isset($login)) {
@@ -49,7 +50,20 @@
      * 
      * 
      */
-    
+    function IsFileOrFolder($element_name){
+        if(is_dir($element_name)) {
+            return "folder";
+        } else {
+            return "file";
+        }
+
+    }
+
+    /**
+     * 
+     * 
+     */
+   
     function ErrorClassFeedback() {
         global $err_code;
         if ($err_code === 1 || 
@@ -69,6 +83,8 @@
      * 
      * 
      */
+
+    
     function ErrorMessageFeedback() {
         global $err_code;
         if ($err_code === 0) {
@@ -81,7 +97,7 @@
             return "<div class='text_error'>Account does not exist</div>";
         } elseif ($err_code === 4) {
              return "<div class='text_error'>Display name already exists</div>";
-        } elseif ($_SESSION["auth"]["err_code"] === 5) {
+        } elseif ($err_code === 5) {
             return "<div class='text_error'>File already exists</div>";
         } elseif ($err_code === 6) {
             return "<div class='text_error'>Min. 3 symbols in each field</div>";
